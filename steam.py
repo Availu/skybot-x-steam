@@ -42,7 +42,7 @@ def steam(inp, url_pasted=None, chan='', nick='', reply=None, api_key=None, db=N
     request_url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
 
     steamapi = http.get_json(request_url, key = api_key, steamids = steamid["response"]["steamid"])
-    steam = steamapi["response"]["players"][0]
+    response = steamapi["response"]["players"][0]
 
     status = {0: "\x0304Offline\x03",
                    1: "\x0303Online\x03",
@@ -52,11 +52,11 @@ def steam(inp, url_pasted=None, chan='', nick='', reply=None, api_key=None, db=N
                    5: "\x0303looking to trade\x03",
                    6: "\x0303looking to play\x03"}
 
-    ret = "\x02"+ steam["personaname"] + "\x0f [" + status[steam["profilestate"]] +"]"
-    if "gameid" not in steam:
+    ret = "\x02"+ response["personaname"] + "\x0f [" + status[response["profilestate"]] +"]"
+    if "gameid" not in response:
         ret += " | Not playing anything."
     else:
-        ret += " | Playing \x02"+ steam["gameextrainfo"] +"\x02"
+        ret += " | Playing \x02"+ response["gameextrainfo"] +"\x02"
     if url_pasted is None:
         ret += " | "+ profile_url + user
 
@@ -71,4 +71,3 @@ def steam(inp, url_pasted=None, chan='', nick='', reply=None, api_key=None, db=N
 @hook.regex(r"steamcommunity.com/id/([_0-9a-zA-Z]+)")
 def show_channel(match, url_pasted=None):
     return steam(match.group(1), "yes", '', '', None, None, None)
-
